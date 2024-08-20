@@ -53,15 +53,13 @@ class AttendanceLogActivity : AppCompatActivity() {
 
         // Load attendance data from SharedPreferences
         val allEntries = sharedPreferences.all
-        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        // Add today's attendance records with a header
-        attendanceList.add("Attendance Log for $currentDate:")
+        // Create a map to group attendance by date
+        val attendanceByDate = mutableMapOf<String, MutableList<String>>()
 
         // Loop through SharedPreferences entries
         for ((key, value) in allEntries) {
             // Ensure that the key contains a valid employee identifier and action
-            // (e.g., "Alice_signIn", "Bob_signOut", "Alice_lunchIn", "Alice_lunchOut")
             if (key.endsWith("_signIn") || key.endsWith("_signOut") ||
                 key.endsWith("_lunchIn") || key.endsWith("_lunchOut")) {
 
@@ -72,10 +70,24 @@ class AttendanceLogActivity : AppCompatActivity() {
                     val action = parts[1]
                     val timestamp = value.toString()
 
-                    // Attempt to format the output
-                    attendanceList.add("$employeeName - ${action.replace("_", " ").capitalize()} at $timestamp")
+                    // Get the date from the timestamp
+                    val date = timestamp.split(" ")[0] // Get only the date part (yyyy-MM-dd)
+                    val formattedDate = dayFormat.format(dateFormat.parse(timestamp)!!)
+
+                    // Add the entry to the map
+                    if (attendanceByDate[formattedDate] == null) {
+                        attendanceByDate[formattedDate] = mutableListOf()
+                    }
+                    attendanceByDate[formattedDate]?.add("$employeeName - ${action.replace("_", " ").capitalize()} at $timestamp")
                 }
             }
+        }
+
+        // Add grouped attendance records to the list with headers
+        for ((date, records) in attendanceByDate) {
+            attendanceList.add("Attendance Log for $date:")
+            attendanceList.addAll(records)
+            attendanceList.add("") // Add an empty line for separation
         }
 
         // Notify the adapter of data changes

@@ -24,7 +24,6 @@
             android:inputType="textPersonName"
             android:padding="12dp"
             android:textColor="@android:color/black"/>
-
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Add User Button -->
@@ -37,8 +36,16 @@
         app:backgroundTint="#2196F3"
         android:textColor="@color/white"
         app:icon="@drawable/plus"
-    app:iconGravity="textStart"
-    app:iconPadding="8dp"
-    app:cornerRadius="8dp" />
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:cornerRadius="8dp" />
+
+    <!-- ListView to display added users -->
+    <ListView
+        android:id="@+id/employeeListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:dividerHeight="8dp"/>
 
 </LinearLayout>
